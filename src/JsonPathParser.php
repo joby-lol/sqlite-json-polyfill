@@ -1,5 +1,28 @@
 <?php
 
+/**
+ * SQLite JSON Polyfill: https://code.byjoby.com/sqlite-json-polyfill/
+ * MIT License: Copyright (c) 2024 Joby Elliott
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE.
+ */
+
 namespace Joby\SqliteJsonPolyfill;
 
 use InvalidArgumentException;
@@ -29,7 +52,7 @@ class JsonPathParser
      * 
      * @return array<Legs\Literal|string>
      */
-    public static function parsePath($path): array
+    public static function parsePath(string $path): array
     {
         $legs = [];
         /**
@@ -116,7 +139,7 @@ class JsonPathParser
                         $escape_sequence_unicode .= $char;
                         // if we've read all four characters, add the character to the leg and reset state
                         if (strlen($escape_sequence_unicode)  == 4) {
-                            $leg .= chr(hexdec($escape_sequence_unicode));
+                            $leg .= chr(intval(hexdec($escape_sequence_unicode) ?: 65533));
                             $escape_sequence = false;
                             $escape_sequence_unicode = false;
                         }
@@ -146,7 +169,7 @@ class JsonPathParser
                 // we are not in a quoted literal, but are in the middle of a leg
                 if (is_null($char) || $char == '.' || $char == '[') {
                     // we are at the end of a leg or the string, add it to the list and reset
-                    if ($quoted_literal) $leg = new Literal($leg);
+                    // if ($quoted_literal) $leg = new Literal($leg); - unnecessary, always false
                     $legs[] = $leg;
                     $leg = null;
                     // back up one character if we're starting an array location
