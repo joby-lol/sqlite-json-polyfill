@@ -41,7 +41,17 @@ class SqliteJsonPolyfill
         if (is_null($providers)) {
             $providers = static::DEFAULT_PROVIDERS;
         }
+        $injectMethod = ($conn instanceof PDO) ? 'sqliteCreateFunction' : 'createFunction';
         foreach ($providers as $provider) {
+            foreach ($provider::getInjectableMethods() as $m) {
+                assert($m instanceof InjectableMethod);
+                $conn->$injectMethod(
+                    $m->name,
+                    $m->method,
+                    $m->num_args,
+                    $m->deterministic ? PDO::SQLITE_DETERMINISTIC : 0
+                );
+            }
         }
     }
 }

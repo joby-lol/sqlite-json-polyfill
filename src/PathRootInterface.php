@@ -23,11 +23,16 @@
  * SOFTWARE.
  */
 
-namespace Joby\SqliteJsonPolyfill\Providers;
+namespace Joby\SqliteJsonPolyfill;
 
 /**
- * @ref https://dev.mysql.com/doc/refman/8.0/en/json-search-functions.html
+ * Represents a single leg of a JSON path, except for the root leg.
  */
-class SearchProvider extends AbstractProvider
+interface PathRootInterface extends PathPartInterface
 {
+    /**
+     * @param array<mixed> &$values
+     * @return JsonPathValue[]
+     */
+    public function values(array &$values): array;
 }

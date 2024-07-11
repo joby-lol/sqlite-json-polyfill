@@ -32,33 +32,63 @@ use Stringable;
  */
 class JsonPath implements Stringable
 {
-    /** @var JsonPathLeg[] */
+    /** @var PathLegInterface[] */
     protected array $legs = [];
+    protected PathRootInterface $root;
 
     /**
      * Parses a JSON path and constructs a JsonPath object from it.
      */
     public static function parse(string $path): JsonPath
     {
-        return new JsonPath(...array_map(
+        $parts = array_map(
             JsonPathParser::parseLeg(...),
             JsonPathParser::parsePath($path)
-        ));
+        );
+        $root = array_shift($parts);
+        static::assertIsRoot($root);
+        static::assertIsAllLegs($parts);
+        return new JsonPath($root, ...$parts);
     }
 
     /**
-     * The constructor is left public just in case it's useful to be able to
-     * create a JsonPath object without parsing a path, from raw legs. Generally
-     * this library will be constructing them by parsing strings.
+     * @phpstan-assert PathRootInterface $root
      */
-    public function __construct(JsonPathLeg ...$legs)
+    protected static function assertIsRoot(mixed $root): void
     {
+        assert(
+            $root instanceof PathRootInterface,
+            'The first part of a JSON path must be a PathRootInterface object'
+        );
+    }
+
+    /**
+     * @phpstan-assert array<PathLegInterface> $parts
+     * @param array<mixed> $parts
+     */
+    protected static function assertIsAllLegs(array $parts): void
+    {
+        assert(
+            count(array_filter($parts, (fn($part) => $part instanceof PathLegInterface))) == 0,
+            'All parts of a JSON path must be PathLegInterface objects'
+        );
+    }
+
+    /**
+     * The constructor is left public just for the rare cases when it's useful
+     * to be able to create a JsonPath object without parsing a path, from raw
+     * legs. Generally this library will be constructing them by parsing
+     * strings.
+     */
+    public function __construct(PathRootInterface $root, PathLegInterface ...$legs)
+    {
+        $this->root = $root;
         $this->legs = $legs;
     }
 
     /**
      * Return all the legs of this path.
-     * @return JsonPathLeg[]
+     * @return PathLegInterface[]
      */
     public function legs(): array
     {
@@ -68,13 +98,18 @@ class JsonPath implements Stringable
     /**
      * Append a leg to the end of this path.
      */
-    public function append(JsonPathLeg $leg): void
+    public function append(PathLegInterface ...$legs): void
     {
-        $this->legs[] = $leg;
+        foreach ($legs as $leg) {
+            $this->legs[] = $leg;
+        }
     }
 
+    /**
+     * Return a string representation of this path.
+     */
     public function __toString(): string
     {
-        return implode('', $this->legs);
+        return $this->root . implode('', $this->legs);
     }
 }

@@ -27,4 +27,9 @@ namespace Joby\SqliteJsonPolyfill;
 
 interface PolyfillProvider
 {
+    /**
+     * Return a list of all the methods from this class that need to be injected
+     * @return InjectableMethod[]
+     */
+    public static function getInjectableMethods(): array;
 }

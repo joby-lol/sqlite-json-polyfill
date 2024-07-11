@@ -23,11 +23,18 @@
  * SOFTWARE.
  */
 
-namespace Joby\SqliteJsonPolyfill\Providers;
+namespace Joby\SqliteJsonPolyfill;
+
+use Stringable;
 
 /**
- * @ref https://dev.mysql.com/doc/refman/8.0/en/json-search-functions.html
+ * Represents a single leg of a JSON path.
  */
-class SearchProvider extends AbstractProvider
+interface PathPartInterface extends Stringable
 {
+    /**
+     * @param array<mixed> $data
+     * @return array<string|int>
+     */
+    public function keys(array $data): array;
 }

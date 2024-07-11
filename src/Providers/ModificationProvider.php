@@ -25,12 +25,12 @@
 
 namespace Joby\SqliteJsonPolyfill\Providers;
 
-use Joby\SqliteJsonPolyfill\PolyfillProvider;
+use InvalidArgumentException;
 
 /**
  * @ref https://dev.mysql.com/doc/refman/8.0/en/json-modification-functions.html
  */
-class ModificationProvider implements PolyfillProvider
+class ModificationProvider extends AbstractProvider
 {
     /**
      * Appends values to the end of the given JSON document and returns the result.
@@ -40,13 +40,19 @@ class ModificationProvider implements PolyfillProvider
     public function JSON_ARRAY_APPEND(string $json_doc, string ...$args): string
     {
         if (count($args) % 2 !== 0) {
-            throw new \InvalidArgumentException('JSON_ARRAY_APPEND requires an even number of arguments after $json_doc');
+            throw new InvalidArgumentException('JSON_ARRAY_APPEND requires an even number of arguments after $json_doc');
         }
         $doc = json_decode($json_doc);
+        if (!is_array($doc)) {
+            throw new InvalidArgumentException('JSON_ARRAY_APPEND requires a valid JSON array as the first argument');
+        }
         for ($i = 0; $i < count($args); $i += 2) {
-            // TODO: fix this, it makes no sense
-            // $doc[] = $args[$i];
-            // $doc[] = $args[$i + 1];
+            $key = $args[$i];
+            $value = $args[$i + 1];
+            if (array_key_exists($key, $doc)) {
+                unset($doc[$key]);
+            }
+            $doc[$key] = $value;
         }
         // @phpstan-ignore-next-line - failing a type check here is good
         return json_encode($doc);

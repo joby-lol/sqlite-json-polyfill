@@ -25,16 +25,14 @@
 
 namespace Joby\SqliteJsonPolyfill\Legs;
 
-use Joby\SqliteJsonPolyfill\JsonPathLeg;
-
-class AllObjectValues implements JsonPathLeg
+class AllObjectValues extends AbstractLeg
 {
-    public function values(array &$values): array
+    public function keys(array $values): array
     {
         $new_results = [];
         foreach ($values as &$result) {
             if (is_array($result)) {
-                foreach ($result as &$value) {
+                foreach (array_keys($result) as &$value) {
                     $new_results[] = $value;
                 }
             }

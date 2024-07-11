@@ -27,7 +27,7 @@ namespace Joby\SqliteJsonPolyfill\Legs;
 
 class AllArrayValues extends AbstractLeg
 {
-    protected function keys(array $value): array
+    public function keys(array $value): array
     {
         return array_keys($value);
     }

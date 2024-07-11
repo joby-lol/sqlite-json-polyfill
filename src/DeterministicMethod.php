@@ -23,11 +23,15 @@
  * SOFTWARE.
  */
 
-namespace Joby\SqliteJsonPolyfill\Providers;
+namespace Joby\SqliteJsonPolyfill;
+
+use Attribute;
 
 /**
- * @ref https://dev.mysql.com/doc/refman/8.0/en/json-search-functions.html
+ * Attribute to mark an injectable method as deterministic, so that we can pass
+ * that information along to SQLite and it can optimize accordingly.
  */
-class SearchProvider extends AbstractProvider
+#[Attribute()]
+class DeterministicMethod
 {
 }

@@ -26,8 +26,8 @@
 namespace Joby\SqliteJsonPolyfill\Legs;
 
 use Joby\SqliteJsonPolyfill\JsonPath;
-use Joby\SqliteJsonPolyfill\JsonPathLeg;
 use Joby\SqliteJsonPolyfill\JsonPathValue;
+use Joby\SqliteJsonPolyfill\PathRootInterface;
 
 /**
  * Root behaves somewhat differently from other Legs. Other legs are passed an
@@ -35,7 +35,7 @@ use Joby\SqliteJsonPolyfill\JsonPathValue;
  * the entire starting document, and it just wraps it in an array. This prepares
  * it to be searched by later legs.
  */
-class Root implements JsonPathLeg
+class Root implements PathRootInterface
 {
     public function keys(array $data): array
     {

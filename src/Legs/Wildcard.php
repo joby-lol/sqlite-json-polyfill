@@ -25,9 +25,7 @@
 
 namespace Joby\SqliteJsonPolyfill\Legs;
 
-use Joby\SqliteJsonPolyfill\JsonPathLeg;
-
-class Wildcard implements JsonPathLeg
+class Wildcard extends AbstractLeg
 {
     public function __construct(
         protected string $suffix,
@@ -35,19 +33,15 @@ class Wildcard implements JsonPathLeg
     ) {
     }
 
-    public function values(array &$values): array
+    public function keys(array $data): array
     {
-        $new_results = [];
-        foreach ($values as &$result) {
-            if (is_array($result)) {
-                foreach ($result as $key => &$value) {
-                    if (!str_ends_with($key, $this->suffix)) continue;
-                    if (!is_null($this->prefix) && !str_starts_with($key, $this->prefix)) continue;
-                    $new_results[] = $value;
-                }
-            }
+        $keys = [];
+        foreach (array_keys($data) as $key) {
+            if (!str_ends_with($key, $this->suffix)) continue;
+            if (!is_null($this->prefix) && !str_starts_with($key, $this->prefix)) continue;
+            $keys[] = $key;
         }
-        return $new_results;
+        return $keys;
     }
 
     public function prefix(): string|null

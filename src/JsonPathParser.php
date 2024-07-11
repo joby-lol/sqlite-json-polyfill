@@ -191,7 +191,7 @@ class JsonPathParser
      * on the string. Because parsePath returns literals as Literal objects,
      * this method also accepts those, and will return them unchanged.
      */
-    public static function parseLeg(string|Literal $leg): JsonPathLeg
+    public static function parseLeg(string|Literal $leg): PathPartInterface
     {
         if ($leg instanceof Literal) {
             return $leg;

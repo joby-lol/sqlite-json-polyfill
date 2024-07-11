@@ -26,9 +26,8 @@
 namespace Joby\SqliteJsonPolyfill\Legs;
 
 use InvalidArgumentException;
-use Joby\SqliteJsonPolyfill\JsonPathLeg;
 
-class ArrayIndexRange implements JsonPathLeg
+class ArrayIndexRange extends AbstractLeg
 {
     public function __construct(
         protected int $start,
@@ -55,15 +54,15 @@ class ArrayIndexRange implements JsonPathLeg
         return $this->end;
     }
 
-    public function values(array &$values): array
+    public function keys(array $data): array
     {
-        $new_results = [];
-        foreach ($values as &$result) {
-            if (is_array($result) && array_key_exists($this->start, $result)) {
-                $new_results[] = &$result[$this->start];
+        $keys = [];
+        for ($i = $this->start; $i <= $this->end; $i++) {
+            if (array_key_exists($i, $data)) {
+                $keys[] = $i;
             }
         }
-        return $new_results;
+        return $keys;
     }
 
     public function __toString(): string

@@ -25,12 +25,12 @@
 
 namespace Joby\SqliteJsonPolyfill\Providers;
 
-use Joby\SqliteJsonPolyfill\PolyfillProvider;
+use InvalidArgumentException;
 
 /**
  * @ref https://dev.mysql.com/doc/refman/8.0/en/json-creation-functions.html#function_json-array
  */
-class CreationProvider implements PolyfillProvider
+class CreationProvider extends AbstractProvider
 {
     /**
      * Evaluates a (possibly empty) list of values and returns a JSON array
@@ -55,15 +55,15 @@ class CreationProvider implements PolyfillProvider
             return '{}';
         }
         if (count($args) % 2 !== 0) {
-            throw new \InvalidArgumentException('JSON_OBJECT requires an even number of arguments');
+            throw new InvalidArgumentException('JSON_OBJECT requires an even number of arguments');
         }
         $result = [];
         for ($i = 0; $i < count($args); $i += 2) {
             if (empty($args[$i])) {
-                throw new \InvalidArgumentException('JSON_OBJECT requires non-empty key names');
+                throw new InvalidArgumentException('JSON_OBJECT requires non-empty key names');
             }
             if (!is_string($args[$i]) && !is_numeric($args[$i])) {
-                throw new \InvalidArgumentException('JSON_OBJECT requires string key names');
+                throw new InvalidArgumentException('JSON_OBJECT requires string key names');
             }
             $result[$args[$i]] = $args[$i + 1];
         }

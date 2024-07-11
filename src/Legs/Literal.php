@@ -26,12 +26,15 @@
 
 namespace Joby\SqliteJsonPolyfill\Legs;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 class Literal extends AbstractLeg
 {
     public function __construct(protected string $literal)
     {
         if (strlen($literal) === 0) {
-            throw new \InvalidArgumentException('Literal leg must not be empty');
+            throw new InvalidArgumentException('Literal leg must not be empty');
         }
     }
 
@@ -49,7 +52,7 @@ class Literal extends AbstractLeg
     {
         $quoted = json_encode($this->literal);
         if ($quoted === false) {
-            throw new \RuntimeException('Failed to encode literal as JSON');
+            throw new RuntimeException('Failed to encode literal as JSON');
         }
         if (str_contains($quoted, '\\')) {
             return '.' . $quoted;

@@ -25,10 +25,10 @@
 
 namespace Joby\SqliteJsonPolyfill\Legs;
 
-use Joby\SqliteJsonPolyfill\JsonPathLeg;
+use Joby\SqliteJsonPolyfill\PathLegInterface;
 use Joby\SqliteJsonPolyfill\JsonPathValue;
 
-abstract class AbstractLeg implements JsonPathLeg
+abstract class AbstractLeg implements PathLegInterface
 {
     /**
      * @param JsonPathValue[] $values
@@ -51,10 +51,10 @@ abstract class AbstractLeg implements JsonPathLeg
         return $output_values;
     }
 
-    protected static function keyToLeg(string $key): JsonPathLeg
+    protected static function keyToLeg(string|int $key): PathLegInterface
     {
-        if (is_numeric($key) && intval($key) == $key) {
-            return new ArrayIndex($key);
+        if (is_int($key) || intval($key) == $key) {
+            return new ArrayIndex(intval($key));
         } else {
             return new Literal($key);
         }

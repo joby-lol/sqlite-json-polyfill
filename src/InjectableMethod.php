@@ -23,11 +23,24 @@
  * SOFTWARE.
  */
 
-namespace Joby\SqliteJsonPolyfill\Providers;
+namespace Joby\SqliteJsonPolyfill;
 
 /**
- * @ref https://dev.mysql.com/doc/refman/8.0/en/json-search-functions.html
+ * Holds a method and its necessary configuration to inject it into a PDO or
+ * SQLite3 connection.
+ * 
+ * @property callable $method
  */
-class SearchProvider extends AbstractProvider
+class InjectableMethod
 {
+    /**
+     * @param callable $method
+     */
+    public function __construct(
+        public readonly string $name,
+        public readonly mixed $method,
+        public readonly int $num_args = -1,
+        public readonly bool $deterministic = false,
+    ) {
+    }
 }

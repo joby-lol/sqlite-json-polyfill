@@ -25,21 +25,14 @@
 
 namespace Joby\SqliteJsonPolyfill;
 
-use Stringable;
-
-interface JsonPathLeg extends Stringable
+/**
+ * Represents a single leg of a JSON path, except for the root leg.
+ */
+interface PathLegInterface extends PathPartInterface
 {
     /**
-     * @param array<mixed> &$values
+     * @param JsonPathValue[] &$values
      * @return JsonPathValue[]
      */
     public function values(array &$values): array;
-
-    /**
-     * @param array<mixed> $data
-     * @return array<string|int>
-     */
-    public function keys(array $data): array;
-
-    // public function unset(array &$results): void;
 }
