@@ -1,7 +1,7 @@
 <?php
 
 /**
- * SQLite JSON Polyfill: https://code.byjoby.com/sqlite-json-polyfill/
+ * SQLite JSON Polyfill: https://go.joby.lol/sqlitejsonpolyfill
  * MIT License: Copyright (c) 2024 Joby Elliott
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
